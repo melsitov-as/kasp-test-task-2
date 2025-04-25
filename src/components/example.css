@@ -1,0 +1,50 @@
+.logical-operator {
+  color: red; /* Change the text color to red */
+  /* You can also add other styles like background-color, font-weight, etc. */
+  background-color: transparent;
+}
+
+.number {
+  color: pink;
+  background-color: transparent;
+}
+
+.special-char {
+  color: white;
+  background-color: transparent;
+}
+
+.textarea-container {
+  width: 1380px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+  background: transparent;
+  box-sizing: 'border-box';
+  border: 2px solid #0075e6;
+  border-radius: 15px;
+  color: #ffffff;
+  font-size: 19px;
+  font-family: 'Arial, sans-serif';
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.DraftEditor-root {
+  position: relative;
+}
+
+.public-DraftEditorPlaceholder-inner {
+  z-index: -1;
+}
+
+.DraftEditor-editorContainer {
+  margin-top: -20px;
+  z-index: 10;
+  background: pink;
+  height: 120px;
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  /* background: pink; */
+}
