@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from 'react';
+import React, { FC, useState, useRef, ReactNode } from 'react';
 import {
   Editor,
   EditorState,
@@ -12,6 +12,8 @@ import {
   EditorChangeType,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import { Button, Flex, Typography } from 'antd';
+import './styles.css';
 
 interface HighlightStyle {
   color: string;
@@ -26,11 +28,11 @@ const defaultHighlightStyle: HighlightStyle = {
 };
 
 const blueHighlightStyle: HighlightStyle = {
-  color: 'lightblue', // Голубой цвет выделения
+  color: '#0075e6', // Голубой цвет выделения
 };
 
 const purpleHighlightStyle: HighlightStyle = {
-  color: '#cf1d97', // Фиолетовый цвет выделения
+  color: '#8517b8', // Фиолетовый цвет выделения
 };
 
 interface PlaceholderStyle {
@@ -41,14 +43,6 @@ interface PlaceholderStyle {
   pointerEvents: 'none';
 }
 
-const placeholderStyle: PlaceholderStyle = {
-  color: 'grey',
-  position: 'absolute',
-  top: '10px',
-  left: '10px',
-  pointerEvents: 'none', // Чтобы клики проходили сквозь плейсхолдер
-};
-
 interface EditorWrapperStyle {
   border: string;
   padding: string;
@@ -58,25 +52,48 @@ interface EditorWrapperStyle {
   position: string;
 }
 
-// const editorWrapperStyle: EditorWrapperStyle = {
-//   border: '1px solid #ccc',
-//   padding: '10px',
-//   minHeight: '100px',
-//   color: 'white',
-//   position: 'relative', // Необходимо для абсолютного позиционирования плейсхолдера
-// };
+export type GenericStyle = Record<string, string | number>;
+
+export const titleStyle: GenericStyle = {
+  margin: 0,
+  padding: 0,
+  color: '#0075e6',
+  textAlign: 'left',
+  marginBottom: '30px',
+};
+
+const { Title, Text } = Typography;
 
 const editorWrapperStyle: any = {
   margin: '0 auto',
   border: '2px solid #0075e6',
   padding: '10px',
   minHeight: '100px',
-  color: 'white',
+  color: 'black',
   width: '1330px',
   // background: 'transparent',
-  background: 'rgba(255, 255, 255, 0.2)',
+  background: 'rgba(255, 255, 255, 1)',
   borderRadius: '15px',
   position: 'relative',
+};
+
+const placeholderStyle: PlaceholderStyle = {
+  color: 'grey',
+  position: 'absolute',
+  top: '10px',
+  left: '10px',
+  pointerEvents: 'none', // Чтобы клики проходили сквозь плейсхолдер
+};
+
+export const colorGrey: GenericStyle = {
+  color: 'rgba(255, 255, 255, 0.7)',
+};
+
+export const buttonStyle: GenericStyle = {
+  width: '1330px',
+  display: 'flex',
+  boxSizing: 'border-box',
+  border: '2px solid rgba(255, 255, 255, 0.7)',
 };
 
 type Callback = (start: number, end: number) => void;
@@ -90,32 +107,13 @@ const findWithRegex = (
   const text = contentBlock.getText();
   let matchArr: RegExpExecArray | null;
   while ((matchArr = regex.exec(text)) !== null) {
-    callback(matchArr.index, matchArr.index + matchArr[0].length);
+    if (matchArr[0][0] === '"' && matchArr[0][matchArr[0].length - 1] === '"') {
+      callback(matchArr.index + 1, matchArr.index + matchArr[0].length - 1);
+    } else {
+      callback(matchArr.index, matchArr.index + matchArr[0].length);
+    }
   }
 };
-
-// const findWithRegex = (
-//   regex: RegExp,
-//   contentBlock: ContentBlock,
-//   callback: Callback
-// ): void => {
-//   console.log(regex);
-//   const text = contentBlock.getText();
-//   let matchArr: RegExpExecArray | null;
-//   while ((matchArr = regex.exec(text)) !== null) {
-//     const match = matchArr[0];
-//     const innerStart = match.startsWith('\\"')
-//       ? match.indexOf('"') + 1
-//       : match.indexOf('"') + 1;
-//     const innerEnd = match.endsWith('\\"')
-//       ? match.lastIndexOf('"')
-//       : match.lastIndexOf('"');
-
-//     if (innerStart < innerEnd) {
-//       callback(matchArr.index + innerStart, matchArr.index + innerEnd);
-//     }
-//   }
-// };
 
 interface HighlightDecoratorProps {
   children?: React.ReactNode;
@@ -142,7 +140,11 @@ const BlueHighlightDecorator: FC<HighlightDecoratorProps> = (
 const PurpleHighlightDecorator: FC<HighlightDecoratorProps> = (
   props: HighlightDecoratorProps
 ) => {
-  return <span style={purpleHighlightStyle}>{props.children}</span>;
+  return (
+    <>
+      <span style={purpleHighlightStyle}>{props.children}</span>
+    </>
+  );
 };
 
 function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
@@ -160,6 +162,10 @@ function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
         : index === 1
         ? PurpleHighlightDecorator
         : index === 2
+        ? PurpleHighlightDecorator
+        : index === 3
+        ? PurpleHighlightDecorator
+        : index === 4
         ? HighlightDecorator
         : BlueHighlightDecorator,
   }));
@@ -170,16 +176,20 @@ const HighlightedEditor: FC = () => {
   const editorRef = useRef<Editor>(null);
   const wordsToHighlight = ['TI', 'AB', 'DP', 'URL'];
   const wordsRegex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
-  // const escapedQuotesRegex = /\\"((?:\\\\\"|[^\\"])*)\\"/g;
   const escapedQuoteInsideDoubleQuotesRegex =
     /"(?:[^"\\]|\\.)*?\\"(?:[^"\\]|\\.)*?"/g;
   const regularQuotesRegex = /"([^"]*)"/g;
+  const escapedQuoteInsideTypographicQuotesRegex =
+    /”(?:[^”\\]|\\.)*?\\”(?:[^”\\]|\\.)*?”/g;
+  const typographicQuotesRegex = /”([^”]*)”/g;
 
   const combinedRegexes = [
-    escapedQuoteInsideDoubleQuotesRegex, // Сначала ищем экранированные кавычки
-    regularQuotesRegex, // Затем ищем обычные кавычки
-    /\b(OR|AND|NOT)\b/gi, // Затем ищем ключевые слова (красный)
-    wordsRegex, // Затем ищем обычные слова (голубой)
+    escapedQuoteInsideDoubleQuotesRegex,
+    regularQuotesRegex,
+    escapedQuoteInsideTypographicQuotesRegex,
+    typographicQuotesRegex,
+    /\b(OR|AND|NOT)\b/g,
+    wordsRegex,
   ];
 
   const [editorState, setEditorState] = useState<EditorState>(
@@ -187,6 +197,7 @@ const HighlightedEditor: FC = () => {
   );
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const onChange = (newEditorState: EditorState): void => {
     setEditorState(newEditorState);
@@ -211,6 +222,10 @@ const HighlightedEditor: FC = () => {
     setIsFocused(false);
   };
 
+  const handleHover = (): void => {
+    setIsHovered(!isHovered);
+  };
+
   const handleBeforeInput = (
     chars: string,
     editorState: EditorState
@@ -223,7 +238,7 @@ const HighlightedEditor: FC = () => {
       const offset = selectionState.getAnchorOffset();
       const textBefore = currentBlock.getText().slice(0, offset); // Исправлено: используем getText().slice()
       const textAfter = currentBlock.getText().slice(offset); // Исправлено: используем getText().slice()
-      // Проверяем, находимся ли мы внутри кавычек (простое приближение)
+
       const insideQuotes =
         textBefore.lastIndexOf('"') > textBefore.lastIndexOf('\\"') &&
         (textAfter.indexOf('"') > textAfter.indexOf('\\"') ||
@@ -231,7 +246,6 @@ const HighlightedEditor: FC = () => {
 
       if (insideQuotes) {
         const newContentState = Modifier.insertText(
-          // Use Modifier.insertText
           currentContent,
           selectionState,
           '\\"',
@@ -244,7 +258,7 @@ const HighlightedEditor: FC = () => {
             'insert-text' as EditorChangeType
           )
         );
-        return 'handled'; // Сообщаем, что событие обработано
+        return 'handled';
       }
     }
     return 'not-handled';
@@ -252,23 +266,49 @@ const HighlightedEditor: FC = () => {
 
   const wrapperStyle = {
     ...editorWrapperStyle,
-    border: isFocused ? '2px solid #ffffff' : '2px solid #0075e6', // Динамический стиль границы
+    border: isFocused
+      ? '3px solid #0075e6'
+      : isHovered
+      ? '3px solid rgba(255, 255, 255, 0.5)'
+      : '3px solid black', // Динамический стиль границы
   };
 
   return (
-    // <div style={editorWrapperStyle}>
-    <div style={wrapperStyle}>
-      {showPlaceholder && (
-        <span style={placeholderStyle}>Enter some text...</span>
-      )}
-      <Editor
-        editorState={editorState}
-        onChange={onChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        handleBeforeInput={handleBeforeInput} // Добавляем обработчик beforeInput
-      />
-    </div>
+    <Flex vertical={true} style={{ paddingTop: '13px' }}>
+      <Title level={2} style={titleStyle}>
+        Enter your search query:
+      </Title>
+
+      <div
+        className='wrapperActions'
+        style={{ ...wrapperStyle, marginBottom: '30px' }}
+      >
+        {showPlaceholder && (
+          <span style={placeholderStyle}>Enter some text...</span>
+        )}
+
+        <Editor
+          editorState={editorState}
+          onChange={onChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          handleBeforeInput={handleBeforeInput} // Добавляем обработчик beforeInput
+        />
+      </div>
+
+      <Button
+        className='buttonActions'
+        type='text'
+        style={{
+          ...buttonStyle,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '24px 0',
+        }}
+      >
+        <Text style={{ ...colorGrey, fontSize: '18px' }}>Send</Text>
+      </Button>
+    </Flex>
   );
 };
 
