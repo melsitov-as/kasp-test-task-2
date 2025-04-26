@@ -81,44 +81,6 @@ const editorWrapperStyle: any = {
 
 type Callback = (start: number, end: number) => void;
 
-// const findWithRegex = (
-//   regex: RegExp,
-//   contentBlock: ContentBlock,
-//   callback: Callback
-// ): void => {
-//   const text = contentBlock.getText();
-//   let matchArr: RegExpExecArray | null, start: number;
-//   while ((matchArr = regex.exec(text)) !== null) {
-//     start = matchArr.index + matchArr[0].indexOf('"') + 1; // Начинаем после первой кавычки
-//     const end = start + matchArr[1].length;
-//     // callback(start, start + matchArr[0].length);
-//     callback(start, end);
-//   }
-// };
-
-// const findWithRegex = (
-//   regex: RegExp,
-//   contentBlock: ContentBlock,
-//   callback: Callback
-// ): void => {
-//   const text = contentBlock.getText();
-//   let matchArr: RegExpExecArray | null, start: number;
-//   while ((matchArr = regex.exec(text)) !== null) {
-//     // Для корректного выделения только содержимого кавычек
-//     const match = matchArr[0];
-//     const innerStart = match.startsWith('\\"')
-//       ? match.indexOf('"') + 1
-//       : match.indexOf('"') + 1;
-//     const innerEnd = match.endsWith('\\"')
-//       ? match.lastIndexOf('"')
-//       : match.lastIndexOf('"');
-
-//     if (innerStart < innerEnd) {
-//       callback(matchArr.index + innerStart, matchArr.index + innerEnd);
-//     }
-//   }
-// };
-
 const findWithRegex = (
   // Новая функция для выделения слов
   regex: RegExp,
@@ -133,11 +95,11 @@ const findWithRegex = (
 };
 
 // const findWithRegex = (
-//   // Новая функция для выделения слов
 //   regex: RegExp,
 //   contentBlock: ContentBlock,
 //   callback: Callback
 // ): void => {
+//   console.log(regex);
 //   const text = contentBlock.getText();
 //   let matchArr: RegExpExecArray | null;
 //   while ((matchArr = regex.exec(text)) !== null) {
