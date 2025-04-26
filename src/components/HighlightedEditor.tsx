@@ -107,7 +107,10 @@ const findWithRegex = (
   const text = contentBlock.getText();
   let matchArr: RegExpExecArray | null;
   while ((matchArr = regex.exec(text)) !== null) {
-    if (matchArr[0][0] === '"' && matchArr[0][matchArr[0].length - 1] === '"') {
+    if (
+      (matchArr[0][0] === '"' && matchArr[0][matchArr[0].length - 1] === '"') ||
+      (matchArr[0][0] === '“' && matchArr[0][matchArr[0].length - 1] === '”')
+    ) {
       callback(matchArr.index + 1, matchArr.index + matchArr[0].length - 1);
     } else {
       callback(matchArr.index, matchArr.index + matchArr[0].length);
@@ -179,9 +182,17 @@ const HighlightedEditor: FC = () => {
   const escapedQuoteInsideDoubleQuotesRegex =
     /"(?:[^"\\]|\\.)*?\\"(?:[^"\\]|\\.)*?"/g;
   const regularQuotesRegex = /"([^"]*)"/g;
+
+  // const escapedQuoteInsideTypographicQuotesRegex =
+  //   /”(?:[^”\\]|\\.)*?\\”(?:[^”\\]|\\.)*?”/g;
+
   const escapedQuoteInsideTypographicQuotesRegex =
-    /”(?:[^”\\]|\\.)*?\\”(?:[^”\\]|\\.)*?”/g;
-  const typographicQuotesRegex = /”([^”]*)”/g;
+    /“(?:[^“\\]|\\.)*?\\“(?:[^“\\]|\\.)*?“/g;
+
+  // const typographicQuotesRegex = /”([^”]*)”/g;
+  const typographicQuotesRegex = /“([^”]*)”/g;
+
+  const regexBetweenQuotes = /"([^"]*)"(.*?)"([^"]*)"/;
 
   const combinedRegexes = [
     escapedQuoteInsideDoubleQuotesRegex,
