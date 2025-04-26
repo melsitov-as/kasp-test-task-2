@@ -306,7 +306,12 @@ const HighlightedEditor: FC = () => {
           padding: '24px 0',
         }}
       >
-        <Text style={{ ...colorGrey, fontSize: '18px' }}>Send</Text>
+        <Text
+          style={{ ...colorGrey, fontSize: '18px' }}
+          className='textActions'
+        >
+          Send
+        </Text>
       </Button>
     </Flex>
   );
