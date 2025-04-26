@@ -30,7 +30,7 @@ const blueHighlightStyle: HighlightStyle = {
 };
 
 const purpleHighlightStyle: HighlightStyle = {
-  color: 'purple', // Фиолетовый цвет выделения
+  color: '#cf1d97', // Фиолетовый цвет выделения
 };
 
 interface PlaceholderStyle {
@@ -96,26 +96,39 @@ type Callback = (start: number, end: number) => void;
 //   }
 // };
 
+// const findWithRegex = (
+//   regex: RegExp,
+//   contentBlock: ContentBlock,
+//   callback: Callback
+// ): void => {
+//   const text = contentBlock.getText();
+//   let matchArr: RegExpExecArray | null, start: number;
+//   while ((matchArr = regex.exec(text)) !== null) {
+//     // Для корректного выделения только содержимого кавычек
+//     const match = matchArr[0];
+//     const innerStart = match.startsWith('\\"')
+//       ? match.indexOf('"') + 1
+//       : match.indexOf('"') + 1;
+//     const innerEnd = match.endsWith('\\"')
+//       ? match.lastIndexOf('"')
+//       : match.lastIndexOf('"');
+
+//     if (innerStart < innerEnd) {
+//       callback(matchArr.index + innerStart, matchArr.index + innerEnd);
+//     }
+//   }
+// };
+
 const findWithRegex = (
+  // Новая функция для выделения слов
   regex: RegExp,
   contentBlock: ContentBlock,
   callback: Callback
 ): void => {
   const text = contentBlock.getText();
-  let matchArr: RegExpExecArray | null, start: number;
+  let matchArr: RegExpExecArray | null;
   while ((matchArr = regex.exec(text)) !== null) {
-    // Для корректного выделения только содержимого кавычек
-    const match = matchArr[0];
-    const innerStart = match.startsWith('\\"')
-      ? match.indexOf('"') + 1
-      : match.indexOf('"') + 1;
-    const innerEnd = match.endsWith('\\"')
-      ? match.lastIndexOf('"')
-      : match.lastIndexOf('"');
-
-    if (innerStart < innerEnd) {
-      callback(matchArr.index + innerStart, matchArr.index + innerEnd);
-    }
+    callback(matchArr.index, matchArr.index + matchArr[0].length);
   }
 };
 
@@ -171,22 +184,14 @@ function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
 const HighlightedEditor: FC = () => {
   const editorRef = useRef<Editor>(null);
   const wordsToHighlight = ['TI', 'AB', 'DP', 'URL'];
-  // const wordsRegex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
-  // const quotesRegex = /"([^"]*)"/g; // Регулярное выражение для текста внутри кавычек
-  // const quotesRegex = /"((?:\\"|[^"])*)"/g;
-  // const quotesRegex = /\\"((?:\\\\\"|[^\\"])*)\\"/g;
-  // const combinedRegexes = [
-  //   /\b(OR|AND|NOT)\b/gi,
-  //   wordsRegex,
-  //   quotesRegex,
-  //   new RegExp(`\\\\"((${wordsToHighlight.join('|')}))\\\\"(?!\\\\")`, 'gi'),
-  // ]; // Добавлен quotesRegex
   const wordsRegex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
-  const escapedQuotesRegex = /\\"((?:\\\\\"|[^\\"])*)\\"/g;
+  // const escapedQuotesRegex = /\\"((?:\\\\\"|[^\\"])*)\\"/g;
+  const escapedQuoteInsideDoubleQuotesRegex =
+    /"(?:[^"\\]|\\.)*?\\"(?:[^"\\]|\\.)*?"/g;
   const regularQuotesRegex = /"([^"]*)"/g;
 
   const combinedRegexes = [
-    escapedQuotesRegex, // Сначала ищем экранированные кавычки
+    escapedQuoteInsideDoubleQuotesRegex, // Сначала ищем экранированные кавычки
     regularQuotesRegex, // Затем ищем обычные кавычки
     /\b(OR|AND|NOT)\b/gi, // Затем ищем ключевые слова (красный)
     wordsRegex, // Затем ищем обычные слова (голубой)
