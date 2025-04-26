@@ -132,6 +132,29 @@ const findWithRegex = (
   }
 };
 
+// const findWithRegex = (
+//   // Новая функция для выделения слов
+//   regex: RegExp,
+//   contentBlock: ContentBlock,
+//   callback: Callback
+// ): void => {
+//   const text = contentBlock.getText();
+//   let matchArr: RegExpExecArray | null;
+//   while ((matchArr = regex.exec(text)) !== null) {
+//     const match = matchArr[0];
+//     const innerStart = match.startsWith('\\"')
+//       ? match.indexOf('"') + 1
+//       : match.indexOf('"') + 1;
+//     const innerEnd = match.endsWith('\\"')
+//       ? match.lastIndexOf('"')
+//       : match.lastIndexOf('"');
+
+//     if (innerStart < innerEnd) {
+//       callback(matchArr.index + innerStart, matchArr.index + innerEnd);
+//     }
+//   }
+// };
+
 interface HighlightDecoratorProps {
   children?: React.ReactNode;
 }
