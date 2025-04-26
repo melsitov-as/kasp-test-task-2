@@ -23,16 +23,12 @@ const highlightStyle: HighlightStyle = {
   color: 'red',
 };
 
-const defaultHighlightStyle: HighlightStyle = {
-  color: 'white', // Фиолетовый цвет выделения
-};
-
 const blueHighlightStyle: HighlightStyle = {
-  color: '#0075e6', // Голубой цвет выделения
+  color: '#0075e6',
 };
 
 const purpleHighlightStyle: HighlightStyle = {
-  color: '#8517b8', // Фиолетовый цвет выделения
+  color: '#8517b8',
 };
 
 interface PlaceholderStyle {
@@ -128,12 +124,6 @@ const HighlightDecorator: FC<HighlightDecoratorProps> = (
   return <span style={highlightStyle}>{props.children}</span>;
 };
 
-const DefaultHightlightDecorator: FC<HighlightDecoratorProps> = (
-  props: HighlightDecoratorProps
-) => {
-  return <span style={defaultHighlightStyle}>{props.children}</span>;
-};
-
 const BlueHighlightDecorator: FC<HighlightDecoratorProps> = (
   props: HighlightDecoratorProps
 ) => {
@@ -183,13 +173,9 @@ const HighlightedEditor: FC = () => {
     /"(?:[^"\\]|\\.)*?\\"(?:[^"\\]|\\.)*?"/g;
   const regularQuotesRegex = /"([^"]*)"/g;
 
-  // const escapedQuoteInsideTypographicQuotesRegex =
-  //   /”(?:[^”\\]|\\.)*?\\”(?:[^”\\]|\\.)*?”/g;
-
   const escapedQuoteInsideTypographicQuotesRegex =
     /“(?:[^“\\]|\\.)*?\\“(?:[^“\\]|\\.)*?“/g;
 
-  // const typographicQuotesRegex = /”([^”]*)”/g;
   const typographicQuotesRegex = /“([^”]*)”/g;
 
   const regexBetweenQuotes = /"([^"]*)"(.*?)"([^"]*)"/;
@@ -247,8 +233,8 @@ const HighlightedEditor: FC = () => {
       const currentContent = editorState.getCurrentContent();
       const currentBlock = currentContent.getBlockForKey(anchorKey);
       const offset = selectionState.getAnchorOffset();
-      const textBefore = currentBlock.getText().slice(0, offset); // Исправлено: используем getText().slice()
-      const textAfter = currentBlock.getText().slice(offset); // Исправлено: используем getText().slice()
+      const textBefore = currentBlock.getText().slice(0, offset);
+      const textAfter = currentBlock.getText().slice(offset);
 
       const insideQuotes =
         textBefore.lastIndexOf('"') > textBefore.lastIndexOf('\\"') &&
@@ -281,7 +267,7 @@ const HighlightedEditor: FC = () => {
       ? '3px solid #0075e6'
       : isHovered
       ? '3px solid rgba(255, 255, 255, 0.5)'
-      : '3px solid black', // Динамический стиль границы
+      : '3px solid black',
   };
 
   return (
