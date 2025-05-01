@@ -63,31 +63,6 @@ const PurpleHighlightDecorator: FC<HighlightDecoratorProps> = (
   );
 };
 
-// function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
-//   const decorators: DraftDecorator<any>[] = regexes.map((regex, index) => ({
-//     strategy: (
-//       contentBlock: ContentBlock,
-//       callback: Callback,
-//       contentState: ContentState
-//     ): void => {
-//       findWithRegex(regex, contentBlock, callback);
-//     },
-//     component:
-//       index === 0
-//         ? PurpleHighlightDecorator
-//         : index === 1
-//         ? PurpleHighlightDecorator
-//         : index === 2
-//         ? PurpleHighlightDecorator
-//         : index === 3
-//         ? PurpleHighlightDecorator
-//         : index === 4
-//         ? HighlightDecorator
-//         : BlueHighlightDecorator,
-//   }));
-//   return new CompositeDecorator(decorators);
-// }
-
 function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
   const decorators: DraftDecorator<any>[] = regexes.map(
     (regex, index): DraftDecorator => {
