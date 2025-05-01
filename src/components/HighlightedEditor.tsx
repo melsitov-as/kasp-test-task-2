@@ -46,7 +46,7 @@ const findWithRegex = (
   }
 };
 
-const HighlightDecorator: FC<HighlightDecoratorProps> = (
+const RedHighlightDecorator: FC<HighlightDecoratorProps> = (
   props: HighlightDecoratorProps
 ) => {
   return <span style={styles.highlightStyle}>{props.children}</span>;
@@ -78,7 +78,7 @@ function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
             : index === 3
             ? PurpleHighlightDecorator
             : index === 4
-            ? HighlightDecorator
+            ? RedHighlightDecorator
             : BlueHighlightDecorator;
         return <BaseComponent {...props} />;
       };
