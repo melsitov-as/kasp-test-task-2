@@ -99,7 +99,7 @@ function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
 }
 
 const HighlightedEditor: FC = () => {
-  const wordsRegex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
+  const wordsRegex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'g');
 
   const combinedRegexes = [
     escapedQuoteInsideDoubleQuotesRegex,
