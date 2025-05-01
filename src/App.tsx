@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import HighlightedEditor from './components/HighlightedEditor';
 
 function App() {

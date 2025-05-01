@@ -12,7 +12,7 @@ import {
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import { Button, Flex, Typography } from 'antd';
-import './styles.css';
+import './styles.scss';
 import { Callback } from '../types/types';
 import { HighlightDecoratorProps } from '../interfaces/interfaces';
 import * as styles from './styles';
