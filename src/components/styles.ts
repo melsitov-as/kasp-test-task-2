@@ -27,7 +27,6 @@ export const editorWrapperStyle: GenericStyle = {
   minHeight: '100px',
   color: 'black',
   width: '1330px',
-  // background: 'transparent',
   background: 'rgba(255, 255, 255, 1)',
   borderRadius: '15px',
   position: 'relative',
@@ -50,4 +49,18 @@ export const buttonStyle: GenericStyle = {
   display: 'flex',
   boxSizing: 'border-box',
   border: '2px solid rgba(255, 255, 255, 0.7)',
+  alignItems: 'center',
+  padding: '24px 0',
+};
+
+export const padTop13: GenericStyle = {
+  paddingTop: '13px',
+};
+
+export const margBot30: GenericStyle = {
+  marginBottom: '30px',
+};
+
+export const fontS18: GenericStyle = {
+  fontSize: '18px',
 };

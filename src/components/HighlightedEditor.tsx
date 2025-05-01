@@ -1,12 +1,10 @@
-import React, { FC, useState, useRef, ReactNode } from 'react';
+import React, { FC, useState } from 'react';
 import {
   Editor,
   EditorState,
   ContentState,
-  RichUtils,
   CompositeDecorator,
   ContentBlock,
-  CharacterMetadata,
   DraftDecorator,
   Modifier,
   EditorChangeType,
@@ -15,14 +13,21 @@ import {
 import 'draft-js/dist/Draft.css';
 import { Button, Flex, Typography } from 'antd';
 import './styles.css';
-import { Callback, GenericStyle } from '../types/types';
+import { Callback } from '../types/types';
 import { HighlightDecoratorProps } from '../interfaces/interfaces';
 import * as styles from './styles';
+import { borderBlack, borderBlue, wordsToHighlight } from '../utils/const';
+import {
+  escapedQuoteInsideDoubleQuotesRegex,
+  escapedQuoteInsideTypographicQuotesRegex,
+  logicalOperatorsRegex,
+  regularQuotesRegex,
+  typographicQuotesRegex,
+} from '../utils/regex';
 
 const { Title, Text } = Typography;
 
 const findWithRegex = (
-  // Новая функция для выделения слов
   regex: RegExp,
   contentBlock: ContentBlock,
   callback: Callback
@@ -56,17 +61,12 @@ const BlueHighlightDecorator: FC<HighlightDecoratorProps> = (
 const PurpleHighlightDecorator: FC<HighlightDecoratorProps> = (
   props: HighlightDecoratorProps
 ) => {
-  return (
-    <>
-      <span style={styles.purpleHighlightStyle}>{props.children}</span>
-    </>
-  );
+  return <span style={styles.purpleHighlightStyle}>{props.children}</span>;
 };
 
 function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
   const decorators: DraftDecorator<any>[] = regexes.map(
     (regex, index): DraftDecorator => {
-      // Явное указание типа для элементов массива
       const getComponent = (props: DraftDecoratorComponentProps) => {
         const BaseComponent =
           index === 0
@@ -99,43 +99,14 @@ function getHighlightDecorator(regexes: RegExp[]): CompositeDecorator {
 }
 
 const HighlightedEditor: FC = () => {
-  const editorRef = useRef<Editor>(null);
-  const wordsToHighlight = [
-    'ID',
-    'TI',
-    'AB',
-    'URL',
-    'DOM',
-    'DP',
-    'LANG',
-    'REACH',
-    'KW',
-    'AU',
-    'CNTR',
-    'CNTR_CODE',
-    'SENT',
-    'TRAFFIC',
-    'FAV',
-    'HIGHLIGHTS',
-  ];
   const wordsRegex = new RegExp(`\\b(${wordsToHighlight.join('|')})\\b`, 'gi');
-  const escapedQuoteInsideDoubleQuotesRegex =
-    /"(?:[^"\\]|\\.)*?\\"(?:[^"\\]|\\.)*?"/g;
-  const regularQuotesRegex = /"([^"]*)"/g;
-
-  const escapedQuoteInsideTypographicQuotesRegex =
-    /“(?:[^“\\]|\\.)*?\\“(?:[^“\\]|\\.)*?“/g;
-
-  const typographicQuotesRegex = /“([^”]*)”/g;
-
-  const regexBetweenQuotes = /"([^"]*)"(.*?)"([^"]*)"/;
 
   const combinedRegexes = [
     escapedQuoteInsideDoubleQuotesRegex,
     regularQuotesRegex,
     escapedQuoteInsideTypographicQuotesRegex,
     typographicQuotesRegex,
-    /\b(OR|AND|NOT)\b/g,
+    logicalOperatorsRegex,
     wordsRegex,
   ];
 
@@ -144,7 +115,6 @@ const HighlightedEditor: FC = () => {
   );
   const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true);
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const onChange = (newEditorState: EditorState): void => {
     setEditorState(newEditorState);
@@ -167,10 +137,6 @@ const HighlightedEditor: FC = () => {
 
   const handleBlur = (): void => {
     setIsFocused(false);
-  };
-
-  const handleHover = (): void => {
-    setIsHovered(!isHovered);
   };
 
   const handleBeforeInput = (
@@ -228,22 +194,18 @@ const HighlightedEditor: FC = () => {
 
   const wrapperStyle = {
     ...styles.editorWrapperStyle,
-    border: isFocused
-      ? '3px solid #0075e6'
-      : isHovered
-      ? '3px solid rgba(255, 255, 255, 0.5)'
-      : '3px solid black',
+    border: isFocused ? borderBlue : borderBlack,
   };
 
   return (
-    <Flex vertical={true} style={{ paddingTop: '13px' }}>
+    <Flex vertical={true} style={styles.padTop13}>
       <Title level={2} style={styles.titleStyle}>
         Enter your search query:
       </Title>
 
       <div
         className='wrapperActions'
-        style={{ ...wrapperStyle, marginBottom: '30px' }}
+        style={{ ...wrapperStyle, ...styles.margBot30 }}
       >
         {showPlaceholder && (
           <span style={styles.placeholderStyle}>Enter some text...</span>
@@ -254,7 +216,7 @@ const HighlightedEditor: FC = () => {
           onChange={onChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          handleBeforeInput={handleBeforeInput} // Добавляем обработчик beforeInput
+          handleBeforeInput={handleBeforeInput}
         />
       </div>
 
@@ -263,13 +225,10 @@ const HighlightedEditor: FC = () => {
         type='text'
         style={{
           ...styles.buttonStyle,
-          display: 'flex',
-          alignItems: 'center',
-          padding: '24px 0',
         }}
       >
         <Text
-          style={{ ...styles.colorGrey, fontSize: '18px' }}
+          style={{ ...styles.colorGrey, ...styles.fontS18 }}
           className='textActions'
         >
           Send
