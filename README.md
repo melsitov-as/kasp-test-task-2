@@ -14,7 +14,7 @@
 Экранирование кавычек, которые находятся внутри других кавычек
 
 ## URLs (адреса страниц)
-"https://melsitov-as.github.io/kasp-tesk-task-2" 
+"https://melsitov-as.github.io/kasp-test-task-2" 
 
 ## Использованы технологии:  
 Scss, Js, Ts, React, Ant Design, draft-js
