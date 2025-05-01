@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/kasp-test-task-2/static/css/main.6928f903.css",
-    "main.js": "/kasp-test-task-2/static/js/main.9eaec8b9.js",
+    "main.js": "/kasp-test-task-2/static/js/main.b3d9e2cc.js",
     "index.html": "/kasp-test-task-2/index.html",
     "main.6928f903.css.map": "/kasp-test-task-2/static/css/main.6928f903.css.map",
-    "main.9eaec8b9.js.map": "/kasp-test-task-2/static/js/main.9eaec8b9.js.map"
+    "main.b3d9e2cc.js.map": "/kasp-test-task-2/static/js/main.b3d9e2cc.js.map"
   },
   "entrypoints": [
     "static/css/main.6928f903.css",
-    "static/js/main.9eaec8b9.js"
+    "static/js/main.b3d9e2cc.js"
   ]
 }
